@@ -2,95 +2,343 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Surprise for you!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pink Celebration ✨</title>
+  <meta name="theme-color" content="#ffc1e3" />
+
+  <!-- Cute rounded font (with safe fallbacks) -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
+    :root{
+      --pink-1:#fff0f6;
+      --pink-2:#ffe0ef;
+      --pink-3:#ffc1e3;
+      --pink-4:#ff94c2;
+      --pink-5:#ff6fb0;
+      --rose:#ff8fb3;
+      --text:#7a2b4b;
+      --white:#ffffff;
+      --shadow: 0 14px 30px rgba(255, 111, 176, 0.25),
+                0 6px 12px rgba(255, 111, 176, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
     body {
-      font-family: "Comic Sans MS";
+      font-family: "Quicksand", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 0%, var(--pink-2), transparent 60%),
+        radial-gradient(1000px 700px at 100% 100%, var(--pink-1), transparent 60%),
+        linear-gradient(180deg, var(--pink-2), var(--pink-1));
+      display: grid;
+      place-items: center;
+      padding: 32px 18px;
+      overflow-x: hidden;
+    }
+
+    .card {
+      width: min(720px, 92vw);
+      background: var(--white);
+      border: 2px solid var(--pink-3);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
       text-align: center;
-      background-color: #ffe6f0;
-      color: #333;
-      padding: 2rem;
-      transition: background 0.5s, color 0.5s;
+      padding: 28px 24px 32px;
+      position: relative;
+      animation: pop-in 600ms ease both;
+      backdrop-filter: blur(2px);
+      outline: 6px solid rgba(255, 193, 227, 0.18);
     }
 
-    h1 {
-      font-size: 2.5rem;
-      color: #ff66b2;
-      animation: pop 1.2s ease;
+    .title {
+      font-size: clamp(1.6rem, 2.8vw + 1rem, 2.4rem);
+      line-height: 1.15;
+      color: var(--pink-5);
+      margin: 8px 0 6px;
+      letter-spacing: 0.4px;
+      text-shadow: 0 2px 0 #ffd2e9;
     }
 
-    p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
+    .subtitle {
+      margin: 0 0 22px;
+      color: #a24b73;
+      font-size: clamp(1rem, 1.4vw + .6rem, 1.1rem);
     }
 
-    button {
-      background-color: #ffb3d1;
+    .btn {
+      display: inline-grid;
+      place-items: center;
+      gap: 6px;
+      width: 220px;
+      height: 56px;
+      margin-top: 6px;
+      border: 0;
+      border-radius: 28px;
+      background: linear-gradient(180deg, var(--pink-5), var(--rose));
       color: #fff;
-      border: none;
-      padding: 1rem 2rem;
-      font-size: 1rem;
-      border-radius: 25px;
+      font-weight: 700;
+      font-size: 1.05rem;
       cursor: pointer;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-      transition: background 0.3s;
+      box-shadow: 0 10px 22px rgba(255, 111, 176, 0.35);
+      transition: transform .12s ease, filter .2s ease, box-shadow .2s ease;
     }
+    .btn:hover { transform: translateY(-1px) scale(1.02); filter: brightness(1.02); }
+    .btn:active { transform: translateY(0) scale(0.99); }
+    .btn:focus-visible { outline: 3px dashed var(--pink-4); outline-offset: 4px; }
 
-    button:hover {
-      background-color: #ff66b2;
+    /* Floating hearts background */
+    .float-hearts {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
     }
-
-    #message {
-      margin-top: 2rem;
-      font-size: 1.3rem;
-      color: #a64d79;
-      display: none;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    .toggle {
+    .heart {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      width: 14px;
+      height: 14px;
+      background: var(--pink-4);
+      transform: rotate(45deg);
+      opacity: 0.5;
+      animation: drift linear infinite;
+      border-radius: 2px;
+    }
+    .heart::before,
+    .heart::after{
+      content:"";
+      position:absolute;
+      width:14px; height:14px;
+      background: var(--pink-4);
+      border-radius:50%;
+    }
+    .heart::before{ left:-7px; top:0; }
+    .heart::after{ left:0; top:-7px; }
+
+    @keyframes drift{
+      from{ transform: translateY(110vh) rotate(45deg); }
+      to{ transform: translateY(-20vh) rotate(45deg); }
     }
 
-    .dark-mode {
-      background-color: #1c1c1c;
-      color: #f8f8f8;
+    /* Modal (cute pop-up) */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 192, 224, 0.45);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .25s ease, visibility .25s ease;
+      z-index: 10;
+    }
+    .backdrop.open {
+      opacity: 1;
+      visibility: visible;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .modal {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      translate: -50% -50%;
+      width: min(640px, 92vw);
+      background: #fff8fc;
+      border: 2px solid var(--pink-3);
+      border-radius: 22px;
+      padding: 26px 22px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      z-index: 11;
+      transform: scale(0.9);
+      opacity: 0;
+      visibility: hidden;
+      transition: transform .25s cubic-bezier(.2,.8,.2,1), opacity .25s ease, visibility .25s;
+    }
+    .modal.open {
+      transform: scale(1);
+      opacity: 1;
+      visibility: visible;
     }
 
-    @keyframes pop {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+    .modal h2 {
+      margin: 4px 0 10px;
+      color: var(--pink-5);
+      font-size: clamp(1.3rem, 1.2rem + 1.2vw, 2rem);
+    }
+    .modal p {
+      margin: 0 auto 14px;
+      font-size: clamp(1rem, .95rem + .6vw, 1.15rem);
+      color: var(--text);
+      max-width: 40ch;
+    }
+
+    .modal .close {
+      margin-top: 8px;
+      border: 0;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--pink-3), var(--pink-4));
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(255, 111, 176, 0.28);
+      transition: transform .12s ease, filter .2s ease;
+    }
+    .modal .close:hover { transform: translateY(-1px); filter: brightness(1.03); }
+    .modal .close:focus-visible { outline: 3px dashed var(--pink-4); outline-offset: 4px; }
+
+    /* Cute confetti hearts when opening modal */
+    .confetti {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+      z-index: 12;
+    }
+    .confetti span {
+      position: absolute;
+      width: 12px; height: 12px;
+      transform: rotate(45deg);
+      background: var(--pink-5);
+      border-radius: 2px;
+      animation: poof 900ms ease forwards;
+      opacity: 0.9;
+    }
+    .confetti span::before,
+    .confetti span::after{
+      content:"";
+      position:absolute;
+      width:12px; height:12px;
+      background: var(--pink-5);
+      border-radius:50%;
+    }
+    .confetti span::before { left:-6px; top:0; }
+    .confetti span::after { left:0; top:-6px; }
+
+    @keyframes poof{
+      0%   { transform: translate(0,0) rotate(45deg) scale(0.6); opacity: 0; }
+      35%  { opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) rotate(45deg) scale(1); opacity: 0; }
+    }
+
+    @keyframes pop-in {
+      from { transform: translateY(8px) scale(.98); opacity: 0; }
+      to   { transform: translateY(0)   scale(1);    opacity: 1; }
+    }
+
+    /* Accessibility: reduce motion if user prefers */
+    @media (prefers-reduced-motion: reduce){
+      .card, .modal { animation: none; transition: none; }
+      .heart, .confetti span { animation: none; }
     }
   </style>
 </head>
 <body>
-  <div class="toggle">
-    <button onclick="toggleMode()">🌙 / ☀️</button>
-  </div>
+  <!-- Floating hearts (background) -->
+  <div class="float-hearts" aria-hidden="true" id="hearts"></div>
 
-  <h1> Happy Wednesday 💖</h1>
-  <p>I made this little page just for you 😊</p>
-  <p> - Tasha</p>
-  <button onclick="showMessage()">Click me for a surprise 💌</button>
+  <main class="card" role="main" aria-labelledby="title">
+    <h1 class="title" id="title">hiiii boyfriend 🌸</h1>
+    <p class="subtitle">miss you!</p>
+    <button class="btn" id="openBtn" aria-haspopup="dialog" aria-controls="celebrateModal">click me</button>
+  </main>
 
-  <div id="message">You're amazing and I'm so lucky to have you 💕✨</div>
+  <!-- Backdrop + Modal -->
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+
+  <section
+    class="modal"
+    id="celebrateModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+    aria-describedby="modalDesc"
+  >
+    <h2 id="modalTitle">🎉 Yay! 🎉</h2>
+    <p id="modalDesc">Congrats on finishing your last class of the year!</p>
+    <button class="close" id="closeBtn" aria-label="Close celebration">Close</button>
+  </section>
+
+  <!-- Confetti container -->
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
 
   <script>
-    function showMessage() {
-      const msg = document.getElementById("message");
-      msg.style.display = "block";
+    // Elements
+    const openBtn   = document.getElementById('openBtn');
+    const closeBtn  = document.getElementById('closeBtn');
+    const modal     = document.getElementById('celebrateModal');
+    const backdrop  = document.getElementById('backdrop');
+    const confetti  = document.getElementById('confetti');
+    const heartsBox = document.getElementById('hearts');
+
+    // Create a few floating hearts
+    (function makeHearts(){
+      const count = 18;
+      for (let i = 0; i < count; i++){
+        const h = document.createElement('div');
+        h.className = 'heart';
+        const left = Math.random() * 100;    // vw
+        const dur  = 10 + Math.random() * 12; // seconds
+        const delay= Math.random() * -dur;
+        const size = 10 + Math.random() * 10; // px base
+
+        h.style.left = left + 'vw';
+        h.style.animationDuration = dur + 's';
+        h.style.animationDelay = delay + 's';
+        h.style.width = size + 'px';
+        h.style.height = size + 'px';
+
+        heartsBox.appendChild(h);
+      }
+    })();
+
+    function openModal(){
+      backdrop.classList.add('open');
+      modal.classList.add('open');
+      backdrop.setAttribute('aria-hidden', 'false');
+      // Focus for a11y
+      setTimeout(() => modal.focus(), 50);
+      burstConfetti();
     }
 
-    function toggleMode() {
-      document.body.classList.toggle("dark-mode");
+    function closeModal(){
+      backdrop.classList.remove('open');
+      modal.classList.remove('open');
+      backdrop.setAttribute('aria-hidden', 'true');
+      // Clear confetti after animation
+      setTimeout(() => { confetti.innerHTML = ''; }, 600);
+      // Return focus to trigger
+      openBtn.focus();
+    }
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', closeModal);
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+
+    // Cute confetti hearts around the modal
+    function burstConfetti(){
+      confetti.innerHTML = '';
+      const N = 22;
+      for (let i = 0; i < N; i++){
+        const piece = document.createElement('span');
+        const angle = (Math.PI * 2 * i) / N;
+        const radius = 80 + Math.random()*60; // px
+        const tx = Math.cos(angle) * radius;
+        const ty = Math.sin(angle) * radius;
+        piece.style.setProperty('--tx', tx + 'px');
+        piece.style.setProperty('--ty', ty + 'px');
+        piece.style.left = (Math.random()*12 - 6) + 'px';
+        piece.style.top  = (Math.random()*12 - 6) + 'px';
+        confetti.appendChild(piece);
+      }
     }
   </script>
 </body>
